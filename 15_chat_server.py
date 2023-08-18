@@ -8,15 +8,13 @@ from ttkbootstrap.constants import *
 # Global variable -----------------------------------------------------------------------------------------------------
 connected_client = []
 is_server_started = False
-col_data = [
-    {"text": "No", "stretch": True},
-    {"text": "Client", "stretch": True},
-]
 
-row_data = [
-    ('1', '610'),
-    ('2', '611'),
-]
+
+def item_selected(event):
+    for selected_item in ConnectionTable.selection():
+        item = ConnectionTable.item(selected_item)
+        record = item['values']
+        print(record)
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -53,15 +51,19 @@ start_button.pack(side='left')
 server_status = ttk.Label(master=ConnectionFrame, textvariable=lbl_status_text, anchor='center', bootstyle="danger")
 server_status.pack(side='right', fill='x', expand=True, padx=10)
 
-# Tableview
-dt = Tableview(
-    master=window,
-    coldata=col_data,
-    rowdata=row_data,
-    paginated=True,
-    searchable=True,
-    bootstyle=PRIMARY,
-    stripecolor=(colors.light, None),
-)
-dt.pack(fill=BOTH, expand=YES, padx=10, pady=10)
+# Treeview
+columns = ('no', 'IP', 'port')
+ConnectionTable = ttk.Treeview(window, columns=columns, show='headings')
+ConnectionTable.pack(fill=BOTH, expand=YES, padx=10, pady=10)
+ConnectionTable.heading('no', text='no')
+ConnectionTable.heading('IP', text='IP')
+ConnectionTable.heading('port', text='port')
+# ---------------------------------------------------------------------------------------------------------------------
+ConnectionTable.insert('', ttk.END, values=('1', '127.0.0.1', '12345'))
+ConnectionTable.insert('', ttk.END, values=('2', '127.0.0.1', '23456'))
+ConnectionTable.insert('', ttk.END, values=('3', '127.0.0.1', '34567'))
+
+# ---------------------------------------------------------------------------------------------------------------------
+ConnectionTable.bind('<<TreeviewSelect>>', item_selected)
+
 window.mainloop()
